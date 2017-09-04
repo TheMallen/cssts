@@ -3,7 +3,6 @@ interface Styles {
  bar: string,
  baz: string,
  simoniscute: string,
- loltotally: string,
  [key: string]: string,
 }
 declare const styles: Styles;

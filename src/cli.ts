@@ -1,33 +1,45 @@
 #!/usr/bin/env node
-import Watcher from './Watcher';
+import {createDts, removeDts} from './dtsTools';
+import * as watch from 'glob-watcher';
 const yargs = require('yargs');
 
 const argv = yargs.command('watch')
   .option('pattern')
-  .option('cwd')
   .default({
     pattern: ['./*.css', './**/*.css'],
-    cwd: '.',
   })
   .alias('p', 'pattern')
-  .alias('c', 'cwd')
   .alias('h', 'help')
   .argv;
 
-const {pattern: glob, cwd} = argv;
-const watcher = new Watcher({glob, cwd});
+const {pattern} = argv;
+const watcher = watch(pattern, {ignoreInitial: false});
 
-watcher.on('error', (err: Error) => {
-  console.error('🔴 Error: ', err);
+function handleError(error: string) {
+  console.log('🔴 Error: ', error)
+}
+
+watcher.on('change', (path: string) => {
+  return createDts(path)
+    .then(({dtsPath}) => {
+      console.log('✅ Dts updated', dtsPath);
+    })
+    .catch(handleError);
 });
 
-watcher.on('update', (originalFilepath: string, dtsPath: string) => {
-  console.error(`✅ Created new dtsFile for ${originalFilepath} ➡️ ${dtsPath}`);
+watcher.on('add', (path: string) => {
+  return createDts(path)
+    .then(({filePath, dtsPath}) => {
+      console.log('✨ Dts created for ', filePath, '➡️', dtsPath);
+    })
+    .catch(handleError);
 });
 
-watcher.on('delete', (originalFilepath: string, dtsPath: string) => {
-  console.error(`🔥 Removed ${originalFilepath} ➡️ ${dtsPath}`);
+watcher.on('unlink', (path: string) => {
+  return removeDts(path)
+    .then(({filePath, dtsPath}) => {
+      console.log('🔥 Dts removed for ', filePath, '➡️', dtsPath);
+    })
+    .catch(handleError);
 });
-
-watcher.watch();
 

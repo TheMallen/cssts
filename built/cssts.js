@@ -21,7 +21,6 @@ var CssTs = (function () {
                 .map(function (className) { return " " + className + ": string,\n"; })
                 .join('')
             : '';
-        console.log('classDefinitions');
         return ('interface Styles {' + '\n' +
             classDefinitions +
             ' [key: string]: string,' + '\n' +

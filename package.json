@@ -12,8 +12,8 @@
   "author": "themallen",
   "license": "ISC",
   "dependencies": {
+    "glob-watcher": "^4.0.0",
     "globby": "^6.1.0",
-    "watch-glob": "^0.1.3",
     "yargs": "^8.0.2"
   },
   "devDependencies": {

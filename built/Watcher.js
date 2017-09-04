@@ -4,7 +4,6 @@ var fs_1 = require("fs");
 var path_1 = require("path");
 var globby = require("globby");
 var CssTs_1 = require("./CssTs");
-var watch = require('watch-glob');
 var Watcher = (function () {
     function Watcher(_a) {
         var glob = _a.glob, cwd = _a.cwd;
@@ -30,7 +29,6 @@ var Watcher = (function () {
         })["catch"](this.onError);
     };
     Watcher.prototype.on = function (event, cb) {
-        console.log('event', event);
         switch (event) {
             case 'update':
                 this.onUpdate = cb;

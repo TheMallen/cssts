@@ -1,27 +1,39 @@
 #!/usr/bin/env node
 "use strict";
 exports.__esModule = true;
-var Watcher_1 = require("./Watcher");
+var dtsTools_1 = require("./dtsTools");
+var watch = require("glob-watcher");
 var yargs = require('yargs');
 var argv = yargs.command('watch')
-    .option('pattern')
-    .option('cwd')["default"]({
-    pattern: ['./*.css', './**/*.css'],
-    cwd: '.'
+    .option('pattern')["default"]({
+    pattern: ['./*.css', './**/*.css']
 })
     .alias('p', 'pattern')
-    .alias('c', 'cwd')
     .alias('h', 'help')
     .argv;
-var glob = argv.pattern, cwd = argv.cwd;
-var watcher = new Watcher_1["default"]({ glob: glob, cwd: cwd });
-watcher.on('error', function (err) {
-    console.error('🔴 Error: ', err);
+var pattern = argv.pattern;
+var watcher = watch(pattern, { ignoreInitial: false });
+function handleError(error) {
+    console.log('🔴 Error: ', error);
+}
+watcher.on('change', function (path) {
+    return dtsTools_1.createDts(path)
+        .then(function (_a) {
+        var dtsPath = _a.dtsPath;
+        console.log('✅ Dts updated', dtsPath);
+    })["catch"](handleError);
 });
-watcher.on('update', function (originalFilepath, dtsPath) {
-    console.error("\u2705 Created new dtsFile for " + originalFilepath + " \u27A1\uFE0F " + dtsPath);
+watcher.on('add', function (path) {
+    return dtsTools_1.createDts(path)
+        .then(function (_a) {
+        var filePath = _a.filePath, dtsPath = _a.dtsPath;
+        console.log('✨ Dts created for ', filePath, '➡️', dtsPath);
+    })["catch"](handleError);
 });
-watcher.on('delete', function (originalFilepath, dtsPath) {
-    console.error("\uD83D\uDD25 Removed " + originalFilepath + " \u27A1\uFE0F " + dtsPath);
+watcher.on('unlink', function (path) {
+    return dtsTools_1.removeDts(path)
+        .then(function (_a) {
+        var filePath = _a.filePath, dtsPath = _a.dtsPath;
+        console.log('🔥 Dts removed for ', filePath, '➡️', dtsPath);
+    })["catch"](handleError);
 });
-watcher.watch();

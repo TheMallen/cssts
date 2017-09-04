@@ -5,9 +5,13 @@
     "noImplicitAny": true,
     "removeComments": false,
     "preserveConstEnums": true,
-    "outDir": "built"
+    "outDir": "built",
+    "typeRoots": [
+      "./node_modules/@types"
+    ]
   },
   "include": [
+    "./config/typescript/**/*",
     "src/**/*"
   ],
   "exclude": [
