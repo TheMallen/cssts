@@ -1,6 +1,6 @@
 import * as expect from 'expect';
 
-import CssTs from '../src/cssts';
+import CssTs from '../cssts';
 
 const styles = `
   .component {
@@ -31,12 +31,12 @@ describe('CssTs', () => {
 
       const expectedResult = [
         'interface Styles {',
-        '  component: string,',
-        '  componentSubcomponent: string,',
-        '  [key: string]: string,',
+        ' component: string,',
+        ' componentSubcomponent: string,',
+        ' [key: string]: string,',
         '}',
         'declare const styles: Styles;',
-        'export = styles;',
+        'export = styles;\n',
       ].join('\n');
 
       expect(instance.toString()).toEqual(expectedResult);

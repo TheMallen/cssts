@@ -4,26 +4,34 @@ export default class CssTs {
   constructor(private rawCss: string) {}
 
   classes() {
-    return this.rawCss
-      .match(CLASS_REGEX)
+    const classTokens = this.rawCss.match(CLASS_REGEX);
+
+    if (classTokens == null) {
+      return [];
+    }
+
+    return classTokens
       .filter((className: string) => className.indexOf('-') === -1)
       .map((className: string) => className.slice(1));
   }
 
   toString() {
-    const classes = this.classes()
-      .map((className: string) => `  ${className}: string,`)
-      .reduce((accumulator: string, propertyDefinition: string) => {
-        return `${accumulator}\n${propertyDefinition}`;
-      });
-    return [
-      'interface Styles {',
-      `${classes}`,
-      '  [key: string]: string,',
-      '}',
-      'declare const styles: Styles;',
-      'export = styles;',
-    ].join('\n');
+    const classNames = this.classes();
+
+    const classDefinitions = classNames
+      ? classNames
+        .map((className: string) => ` ${className}: string,\n`)
+        .join('')
+      : '';
+
+    return (
+      'interface Styles {' + '\n' +
+      classDefinitions +
+      ' [key: string]: string,' + '\n' +
+      '}' + '\n' +
+      'declare const styles: Styles;' + '\n' +
+      'export = styles;' + '\n'
+    );
   }
 }
 

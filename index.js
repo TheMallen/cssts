@@ -1,2 +1,3 @@
-exports.CssTs = require('./src/CssTs');
-exports.loader = require('./src/loader');
+exports.CssTs = require('./built/CssTs');
+exports.Watcher = require('./built/Watcher');
+exports.loader = require('./built/loader');

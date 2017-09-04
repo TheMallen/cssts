@@ -3,12 +3,12 @@
   "compilerOptions": {
     "module": "commonjs",
     "noImplicitAny": true,
-    "removeComments": true,
-    "preserveConstEnums": true
+    "removeComments": false,
+    "preserveConstEnums": true,
+    "outDir": "built"
   },
   "include": [
-    "src/**/*",
-    "test/**/*"
+    "src/**/*"
   ],
   "exclude": [
     "node_modules",
